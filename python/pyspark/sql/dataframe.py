@@ -1603,7 +1603,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         self.rdd.foreachPartition(f)  # type: ignore[arg-type]
 
     def cache(self) -> "DataFrame":
-        """Persists the :class:`DataFrame` with the default storage level (`MEMORY_AND_DISK_DESER`).
+        """Persists the :class:`DataFrame` with the default storage level (`MEMORY_AND_DISK_DESER`). This does not force evaluation.
 
         .. versionadded:: 1.3.0
 
@@ -2709,8 +2709,8 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         When the join condition is explicited stated: `df.name == df2.name`, this will
         produce all records where the names match, as well as those that don't (since
-        it's an outer join). If there are names in `df2` that are not present in `df`,
-        they will appear with `NULL` in the `name` column of `df`, and vice versa for `df2`.
+        it's an outer join). If there are names in `df2` that are not present in `df1`,
+        they will appear with `NULL` in the `name` column of `df1`, and vice versa for `df2`.
 
         >>> joined = df1.join(df2, df1.name == df2.name, "outer").sort(sf.desc(df1.name))
         >>> joined.show() # doctest: +SKIP
@@ -2756,7 +2756,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         Outer join on a single column with implicit join condition using column name
 
         When you provide the column name directly as the join condition, Spark will treat
-        both name columns as one, and will not produce separate columns for `df.name` and
+        both name columns as one, and will not produce separate columns for `df1.name` and
         `df2.name`. This avoids having duplicate columns in the output.
 
         >>> df1.join(df2, "name", "outer").sort(sf.desc("name")).show()
