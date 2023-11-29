@@ -2635,6 +2635,10 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         | 16|  Bob|    80|
         | 16|  Bob|    85|
         +---+-----+------+
+        
+        See Also
+        --------
+        DataFrame.join
         """
 
         jdf = self._jdf.crossJoin(other._jdf)
