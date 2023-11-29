@@ -2822,6 +2822,11 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         +-----+---+
         |Alice|  2|
         +-----+---+
+        
+
+        See Also
+        --------
+        DataFrame.crossJoin
         """
 
         if on is not None and not isinstance(on, list):
