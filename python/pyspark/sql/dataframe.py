@@ -2680,7 +2680,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         >>> import pyspark.sql.functions as sf
         >>> from pyspark.sql import Row
-        >>> df = spark.createDataFrame([Row(name="Alice", age=2), Row(name="Bob", age=5)])
+        >>> df1 = spark.createDataFrame([Row(name="Alice", age=2), Row(name="Bob", age=5)])
         >>> df2 = spark.createDataFrame([Row(name="Tom", height=80), Row(name="Bob", height=85)])
         >>> df3 = spark.createDataFrame([
         ...     Row(name="Alice", age=10, height=80),
@@ -2691,14 +2691,14 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Inner join on columns (default)
 
-        >>> df.join(df2, "name").show()
+        >>> df1.join(df2, "name").show()
         +----+---+------+
         |name|age|height|
         +----+---+------+
         | Bob|  5|    85|
         +----+---+------+
 
-        >>> df.join(df3, ["name", "age"]).show()
+        >>> df1.join(df3, ["name", "age"]).show()
         +----+---+------+
         |name|age|height|
         +----+---+------+
@@ -2712,7 +2712,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         it's an outer join). If there are names in `df2` that are not present in `df`,
         they will appear with `NULL` in the `name` column of `df`, and vice versa for `df2`.
 
-        >>> joined = df.join(df2, df.name == df2.name, "outer").sort(sf.desc(df.name))
+        >>> joined = df1.join(df2, df1.name == df2.name, "outer").sort(sf.desc(df1.name))
         >>> joined.show() # doctest: +SKIP
         +-----+----+----+------+
         | name| age|name|height|
@@ -2724,7 +2724,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         To unambiguously select output columns, specify the dataframe along with the column name:
 
-        >>> joined.select(df.name, df2.height).show() # doctest: +SKIP
+        >>> joined.select(df1.name, df2.height).show() # doctest: +SKIP
         +-----+------+
         | name|height|
         +-----+------+
@@ -2735,7 +2735,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         However, in self-joins, direct column references can cause ambiguity:
 
-        >>> df.join(df, df.name == df.name, "outer").select(df.name).show() # doctest: +SKIP
+        >>> df1.join(df1, df1.name == df1.name, "outer").select(df1.name).show() # doctest: +SKIP
         Traceback (most recent call last):
         ...
         pyspark.errors.exceptions.captured.AnalysisException: Column name#0 are ambiguous...
@@ -2743,8 +2743,8 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         A better approach is to assign aliases to the dataframes, and then reference
         the ouptut columns from the join operation using these aliases:
 
-        >>> df.alias("a").join(
-        ...     df.alias("b"), sf.col("a.name") == sf.col("b.name"), "outer"
+        >>> df1.alias("a").join(
+        ...     df1.alias("b"), sf.col("a.name") == sf.col("b.name"), "outer"
         ... ).sort(sf.desc("a.name")).select("a.name", "b.age").show()
         +-----+---+
         | name|age|
@@ -2759,7 +2759,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
         both name columns as one, and will not produce separate columns for `df.name` and
         `df2.name`. This avoids having duplicate columns in the output.
 
-        >>> df.join(df2, "name", "outer").sort(sf.desc("name")).show()
+        >>> df1.join(df2, "name", "outer").sort(sf.desc("name")).show()
         +-----+----+------+
         | name| age|height|
         +-----+----+------+
@@ -2770,7 +2770,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Outer join on multiple columns
 
-        >>> df.join(df3, ["name", "age"], "outer").show()
+        >>> df1.join(df3, ["name", "age"], "outer").show()
         +-----+----+------+
         | name| age|height|
         +-----+----+------+
@@ -2783,7 +2783,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Left outer join on columns
 
-        >>> df.join(df2, "name", "left_outer").show()
+        >>> df1.join(df2, "name", "left_outer").show()
         +-----+---+------+
         | name|age|height|
         +-----+---+------+
@@ -2793,7 +2793,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Right outer join on columns
 
-        >>> df.join(df2, "name", "right_outer").show()
+        >>> df1.join(df2, "name", "right_outer").show()
         +----+----+------+
         |name| age|height|
         +----+----+------+
@@ -2803,7 +2803,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Left semi join on columns
 
-        >>> df.join(df2, "name", "left_semi").show()
+        >>> df1.join(df2, "name", "left_semi").show()
         +----+---+
         |name|age|
         +----+---+
@@ -2812,7 +2812,7 @@ class DataFrame(PandasMapOpsMixin, PandasConversionMixin):
 
         Left anti join on columns
 
-        >>> df.join(df2, "name", "left_anti").show()
+        >>> df1.join(df2, "name", "left_anti").show()
         +-----+---+
         | name|age|
         +-----+---+
